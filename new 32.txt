@@ -1,0 +1,27 @@
+  -virtual CreatureAI* GetAI(Creature* /*creature*/) const { return NULL; }
+  -};
+-
+-class GameObjectScript : public ScriptObject, public UpdatableScript<GameObject>
+-{
+-    protected:
+-
+-        GameObjectScript(const char* name);
++        CreatureScript(char const* name);
+
+
++        // Called when a CreatureAI object is needed for the creature.
++        virtual CreatureAI* GetAI(Creature* /*creature*/) const = 0;
+-        // Called when a CreatureAI object is needed for the creature.
+-        virtual CreatureAI* GetAI(Creature* /*creature*/) const { return NULL; }
++        // Called when a CreatureAI object is needed for the creature.
++        virtual CreatureAI* GetAI(Creature* /*creature*/) const = 0;
++        CreatureAI* GetAI(Creature* me) const override { return new AI(me); }
++        CreatureAI* GetAI(Creature* me) const override { return AIFactory(me); }
+ CreatureAI* ScriptMgr::GetCreatureAI(Creature* creature)
+ {
+     ASSERT(creature);
+ 
+-    GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, NULL);
++    GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, nullptr);
+     return tmpscript->GetAI(creature);
+	 
